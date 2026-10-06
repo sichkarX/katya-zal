@@ -189,7 +189,7 @@
     <div id="days"></div>
     <button class="safelink" onclick="toggleSafe()">Безопасность при грыже ▾</button>
     <div id="safebox" class="safebox hidden"></div>
-    <div class="verline">Зал · Катя · v0.4 · превью 6 октября 2026</div>
+    <div class="verline">Зал · Катя · v1.0 · релиз 6 октября 2026</div>
   </section>
 
   <section id="workout" class="hidden">
@@ -385,7 +385,7 @@ function toast(t){const el=document.getElementById("toast");el.textContent=t;el.
 /* ===== синхронизация с Google-таблицей Кати (своя таблица и свой скрипт) =====
    Отправка: строки уходят в очередь (localStorage) и удаляются из неё только после успешной отправки.
    Если в зале нет связи — отправятся при следующем открытии приложения. */
-const SYNC_URL="", SYNC_TOKEN="";
+const SYNC_URL="https://script.google.com/macros/s/AKfycbzqbP_c_m2giiQCIE5iFRcOnDCxG8dfZiHU_iSxxcQkTGQqH7r8NyvuZxokTFuFqdE/exec", SYNC_TOKEN="katya-a4d28b9d5bd7";
 function flushQueue(){if(!SYNC_URL)return;const s=store();const q=s.queue||[];if(!q.length)return;
   const batch=q.slice();
   fetch(SYNC_URL,{method:"POST",mode:"no-cors",keepalive:true,headers:{"Content-Type":"text/plain;charset=utf-8"},
