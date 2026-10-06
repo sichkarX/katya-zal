@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Зал">
+<meta name="theme-color" content="#000000">
+<title>Зал — Катя</title>
+<style>
+  :root{
+    --bg:#000; --card:#141416; --card2:#1c1c1f; --line:#2b2b30;
+    --tx:#f5f5f7; --tx2:#98989f; --tx3:#6a6a72;
+    --bur:#8e2443;          /* бургунди — фирменный */
+    --bur-hi:#a8304f;       /* нажатие / акцент поярче */
+    --bur-tx:#f2a7bb;       /* бургунди для текста на тёмном */
+    --bur-soft:rgba(168,48,79,.16);
+    --bur-line:rgba(168,48,79,.42);
+    --red:#ff453a;
+    --gd1:linear-gradient(135deg,#a8304f,#5c1229);
+    --gd2:linear-gradient(135deg,#94304e,#4a0f22);
+    --gd3:linear-gradient(135deg,#7d2a48,#3d0d1f);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  html,body{margin:0; background:var(--bg); color:var(--tx); overflow-x:hidden; max-width:100%;
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Helvetica,Arial,sans-serif; -webkit-font-smoothing:antialiased}
+  input,textarea,button{font-family:inherit}
+  .wrap{max-width:500px; margin:0 auto; padding:calc(20px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom))}
+  .hidden{display:none !important}
+
+  h1{font-size:32px; font-weight:800; margin:0; letter-spacing:-.03em}
+  .hrow{display:flex; align-items:center; justify-content:space-between; gap:12px; margin:4px 0 16px}
+  .datebadge{font-size:13px; font-weight:700; color:var(--bur-tx); background:var(--bur-soft);
+    border:1px solid var(--bur-line); padding:7px 13px; border-radius:12px; white-space:nowrap}
+
+  .habit{background:var(--card); border:1px solid var(--line); border-radius:18px; padding:15px 16px; margin-bottom:14px}
+  .hdots{display:flex; gap:7px; margin:2px 0 6px}
+  .dcell{flex:1; display:flex; flex-direction:column; align-items:center; gap:6px}
+  .dcirc{width:32px; height:32px; border-radius:50%; background:#24242a; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; overflow:hidden}
+  .dcell.plan .dcirc{border-color:#3d3d45}
+  .dcell.on .dcirc{background:var(--bur); border-color:var(--bur)}
+  .dcell.today .dcirc{box-shadow:0 0 0 2px var(--bur-tx)}
+  .dcell .dlbl{font-size:10.5px; color:var(--tx3); font-weight:700}
+  .dcell.plan .dlbl{color:var(--tx2)}
+  .dic{display:inline-flex; color:#fff}
+  .dic svg{width:16px; height:16px}
+  .mgoal{margin-top:13px}
+  .mgoal-l{display:flex; justify-content:space-between; font-size:12px; color:var(--tx2); margin-bottom:7px}
+  .mgoal-l b{color:var(--tx); font-weight:800}
+  .mbar{height:6px; border-radius:4px; background:#26262c; overflow:hidden}
+  .mfill{height:100%; border-radius:4px; background:var(--bur-hi); transition:width .3s}
+
+  .cap{font-size:12.5px; color:var(--tx3); margin:0 2px 14px; font-weight:500}
+
+  .daycard{display:flex; align-items:center; justify-content:space-between; gap:14px; border-radius:22px;
+    padding:20px 22px; margin-bottom:13px; cursor:pointer; color:#fff; border:none; width:100%; text-align:left;
+    transition:transform .12s, filter .12s}
+  .daycard:active{transform:scale(.985); filter:brightness(1.08)}
+  .daycard .info{min-width:0}
+  .daycard .tag{display:block; font-size:11px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; opacity:.8}
+  .daycard .t{display:block; font-size:22px; font-weight:800; letter-spacing:-.02em; margin-top:5px; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .daycard .n{flex:0 0 auto; width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,.18);
+    display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:800}
+  .daycard.today{box-shadow:0 0 0 2px var(--bur-tx)}
+  .d1{background:var(--gd1)} .d2{background:var(--gd2)} .d3{background:var(--gd3)}
+
+  .safelink{display:block; width:100%; background:none; border:none; color:var(--tx3); font-size:12.5px; padding:6px 2px; text-align:center; cursor:pointer}
+  .safebox{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px 16px; margin:6px 0 10px; font-size:13px; line-height:1.55; color:var(--tx)}
+  .safebox b{color:var(--bur-tx)}
+  .safebox .stop{color:#ff8f88}
+
+  .top{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px}
+  .back{width:40px;height:40px;border-radius:50%;background:var(--card2);border:1px solid var(--line);
+    color:var(--tx); font-size:22px; display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .startbtn{background:var(--bur); color:#fff; border:none; border-radius:12px; padding:11px 20px;
+    font-size:15px; font-weight:800; cursor:pointer}
+  .startbtn:active{background:var(--bur-hi)}
+  .startbtn.run{background:var(--card2); color:var(--tx); border:1px solid var(--line); font-variant-numeric:tabular-nums; font-size:17px}
+  .whead{border-radius:20px; padding:18px 20px; color:#fff; margin-bottom:14px}
+  .whead .tag{font-size:11px;font-weight:700;opacity:.8;text-transform:uppercase;letter-spacing:.09em}
+  .whead .t{font-size:24px;font-weight:800;margin-top:5px;letter-spacing:-.02em}
+  .whead .s{font-size:12.5px;opacity:.92;margin-top:6px;font-weight:500;line-height:1.4}
+
+  .togglebar{width:100%; text-align:left; background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:14px 16px; color:var(--tx); font-size:14px; font-weight:600; cursor:pointer;
+    display:flex; justify-content:space-between; align-items:center; margin-bottom:11px}
+  .togglebar .sub{color:var(--tx3); font-size:12px; font-weight:500}
+  .chev{transition:transform .2s} .chev.open{transform:rotate(180deg)}
+
+  .sechead{font-size:11.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--tx3); font-weight:700; margin:20px 4px 10px; display:flex; align-items:center; gap:9px}
+  .sechead .ln{flex:1;height:1px;background:var(--line)}
+  .ex{background:var(--card); border:1px solid var(--line); border-radius:18px; padding:14px 15px; margin-bottom:11px}
+  .ex.warm{background:#101012; border-color:#232327}
+  .exhd{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:4px}
+  .exhd > div:first-child{min-width:0; flex:1}
+  .ex .name{font-size:15px; font-weight:700; letter-spacing:-.01em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .ex .plan{font-size:12.5px; color:var(--tx2)}
+  .ex .note{font-size:12px; color:var(--bur-tx); margin-top:4px; line-height:1.4}
+  .exact{display:flex; align-items:center; gap:12px; flex:0 0 auto}
+  .cbtn{background:none; border:none; padding:2px; color:var(--tx3); cursor:pointer; position:relative; display:inline-flex; line-height:0}
+  .cdot{display:none; position:absolute; top:0; right:0; width:8px; height:8px; border-radius:50%; background:var(--bur-tx); border:1.5px solid var(--card)}
+  .ex.hasnote .cbtn{color:var(--bur-tx)}
+  .ex.hasnote .cdot{display:block}
+  .exnote{display:flex; gap:8px; margin:10px 0 2px}
+  .exnote-ta{flex:1; background:#141414; border:1px solid #333; border-radius:11px; color:var(--tx); font-size:16px; padding:10px 12px; resize:none; line-height:1.35}
+  .exnote-ta:focus{outline:none; border-color:var(--bur-line)}
+  .exnote-ta::placeholder{color:#555}
+  .exnote-ok{flex:0 0 auto; background:rgba(255,255,255,.07); border:1px solid var(--line); color:var(--tx); border-radius:11px; padding:0 16px; font-size:14px; font-weight:700; cursor:pointer}
+  .techbtn{flex:0 0 auto; display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,.07);
+    border:1px solid var(--line); color:#dcdce4; border-radius:10px; padding:8px 12px; font-size:12.5px;
+    font-weight:600; white-space:nowrap; cursor:pointer}
+  .cues{margin-top:11px; background:#0e0e10; border:1px solid var(--line); border-radius:12px; padding:11px 13px}
+  .cues .c{font-size:12.5px; line-height:1.5; margin:2px 0; color:var(--tx)}
+  .cues .c.ok::before{content:"✓ "; color:var(--bur-tx); font-weight:800}
+  .cues .c.no::before{content:"✗ "; color:var(--red); font-weight:800}
+  .cues .vbtn{margin-top:9px; display:inline-flex; align-items:center; gap:6px; background:#fff; color:#000;
+    border:none; border-radius:9px; padding:8px 13px; font-size:13px; font-weight:700; cursor:pointer}
+  .cues .vsoon{margin-top:9px; font-size:12px; color:var(--tx3)}
+
+  table.sets{width:100%; table-layout:fixed; border-collapse:collapse; margin-top:12px}
+  table.sets th{font-size:10px; color:var(--tx3); font-weight:700; text-transform:uppercase; text-align:center; padding:0 2px 7px}
+  table.sets th:first-child{width:24px}
+  table.sets th.l{text-align:left; width:58px}
+  table.sets th:last-child{width:40px}
+  table.sets td{padding:3px 2px; text-align:center; vertical-align:middle}
+  .setno{color:var(--tx); font-weight:800; font-size:16px}
+  .prevc{font-size:12px; color:var(--tx2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:left !important}
+  .prevc b{color:var(--tx); font-weight:700}
+  .sinp{width:100%; background:var(--card2); border:1px solid var(--line); color:var(--tx); border-radius:9px;
+    padding:10px 4px; font-size:16px; font-weight:600; text-align:center; outline:none}
+  .sinp:focus{border-color:var(--bur-hi); box-shadow:0 0 0 3px var(--bur-soft)}
+  .done{width:31px;height:31px;border-radius:9px;border:1.5px solid var(--line);background:transparent;color:var(--tx3);
+    font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center; transition:.12s}
+  tr.setdone .done{background:var(--bur); border-color:var(--bur); color:#fff}
+  tr.setdone .sinp{border-color:var(--bur-line); background:var(--bur-soft)}
+
+  .cool{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px 16px; margin-top:6px}
+  .cool .h{font-size:14px; font-weight:700}
+  .cool .p{font-size:12.5px; color:var(--tx2); margin-top:5px; line-height:1.5}
+
+  .notewrap{margin:22px 0 4px}
+  .notelbl{display:block; font-size:12px; color:var(--tx3); margin:0 0 7px 2px}
+  .wnote{width:100%; background:#141414; border:1px solid #262626; border-radius:12px; color:var(--tx); font-size:16px; padding:12px 14px; resize:none; line-height:1.4}
+  .wnote:focus{outline:none; border-color:var(--bur-line)}
+  .wnote::placeholder{color:#555}
+  .foot{color:var(--tx3); font-size:11.5px; text-align:center; margin-top:18px; line-height:1.6}
+  .savebar{margin:16px 0 8px}
+  .savebtn{width:100%; background:var(--bur); color:#fff; border:none; border-radius:14px; padding:16px; font-size:16px; font-weight:800; cursor:pointer}
+  .savebtn:active{background:var(--bur-hi)}
+
+  .rest{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(28px + env(safe-area-inset-bottom)); z-index:20; background:#1c1c22;
+    border:1px solid var(--bur-line); border-radius:14px; padding:10px 14px; display:none; align-items:center; gap:12px; box-shadow:0 8px 30px rgba(0,0,0,.6); white-space:nowrap}
+  .rest.show{display:flex}
+  .rest .lb{font-size:13px; color:var(--tx2)}
+  .rest .tm{font-size:24px;font-weight:800;font-variant-numeric:tabular-nums;min-width:62px;text-align:center;color:var(--bur-tx)}
+  .rest button{background:transparent;border:1px solid var(--line);color:var(--tx);border-radius:9px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer}
+
+  .toast{position:fixed; left:50%; top:calc(18px + env(safe-area-inset-top)); transform:translateX(-50%); z-index:60; background:#1c1c22; border:1px solid var(--bur-line);
+    color:var(--tx); border-radius:12px; padding:11px 16px; font-size:14px; font-weight:600; display:none; max-width:90vw; text-align:center}
+  .toast.show{display:block}
+
+  .modal{position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:50; display:none; align-items:center; justify-content:center; padding:16px}
+  .modal.show{display:flex}
+  .modal .box{width:100%; max-width:420px}
+  .modal .vwrap{position:relative; padding-top:177.7%; max-height:72vh; background:#000; border-radius:16px; overflow:hidden}
+  .modal .vwrap.wide{padding-top:56.25%}
+  .modal iframe{position:absolute; inset:0; width:100%; height:100%; border:0}
+  .modal .cls{margin-top:12px; width:100%; background:#fff; color:#000; border:none; border-radius:12px; padding:14px; font-size:15px; font-weight:800; cursor:pointer}
+  .topright{display:flex; gap:10px; align-items:center}
+  .musicbtn{width:44px; height:44px; border-radius:50%; background:var(--card2); border:1px solid var(--bur-line); color:var(--bur-tx); font-size:18px; cursor:pointer; flex:0 0 auto}
+  .musicbtn:active{background:var(--bur-soft)}
+  .verline{font-size:11px; color:var(--tx3); text-align:center; padding:26px 0 6px; letter-spacing:.02em}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section id="home">
+    <div class="hrow"><h1>Зал</h1><div class="datebadge" id="datebadge"></div></div>
+    <div id="habit"></div>
+    <div id="cap" class="cap"></div>
+    <div id="days"></div>
+    <button class="safelink" onclick="toggleSafe()">Безопасность при грыже ▾</button>
+    <div id="safebox" class="safebox hidden"></div>
+    <div class="verline">Зал · Катя · v0.4 · превью 6 октября 2026</div>
+  </section>
+
+  <section id="workout" class="hidden">
+    <div class="top">
+      <button class="back" onclick="leaveWorkout()" aria-label="Назад">‹</button>
+      <div class="topright"><button class="musicbtn" onclick="openMusic()" aria-label="Музыка">♪</button>
+      <button class="startbtn" id="startbtn" onclick="toggleStart()">▶ Начать</button></div>
+    </div>
+    <div id="whead" class="whead"></div>
+    <div id="warmwrap"></div>
+    <div id="exlist"></div>
+    <div id="coolwrap"></div>
+    <div class="notewrap"><label class="notelbl">Заметка (необязательно)</label><textarea id="wnote" class="wnote" rows="2" placeholder="Как прошло: самочувствие, что было тяжело…"></textarea></div>
+    <div class="foot">Тренировка завершится сама, если ничего не вводить ~15 минут.</div>
+    <div class="savebar"><button class="savebtn" onclick="finishWorkout(false)">Завершить тренировку</button></div>
+  </section>
+</div>
+
+<div id="restbar" class="rest"><span class="lb">Отдых</span><span class="tm" id="rest-tm">0:00</span>
+  <button onclick="restAdd(15)">+15 сек</button><button onclick="restSkip()">Дальше</button></div>
+<div id="toast" class="toast"></div>
+
+<div class="modal" id="videoModal"><div class="box">
+  <div class="vwrap" id="vwrap"><iframe id="videoFrame" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
+  <button class="cls" onclick="closeVideo()">Закрыть</button></div></div>
+
+<script>
+/* ===== ПРОГРАММА — собрана из ПРОГРАММА.md v1.0 (6 окт 2026). Правки — сначала в файл. ===== */
+const PLAN_START="2026-10-13";           /* первый вторник программы */
+const REPS="12–15", REST="1 мин";
+function e2(name,sets,reps,rest,o={}){return Object.assign({name,sets,reps,rest},o);}
+const BREATH="ok:Выдох на усилии, дыхание не задерживай";
+
+const WARM=[
+  e2("Беговая дорожка",1,"5 мин","—",{nokg:true,cues:["ok:Быстрый шаг, но можно спокойно говорить","ok:Без наклона или совсем небольшой","no:Без бега"]}),
+  e2("Ягодичный мост лёжа",1,"15","—",{nokg:true,vid:"_rk0sjIGUlw",cues:["ok:Стопы на ширине таза, пятки ближе к ягодицам","ok:Поднимай таз за счёт ягодиц, наверху пауза 1 сек",BREATH,"no:Не прогибай поясницу","no:Вставай с пола через бок, не рывком"]}),
+  e2("Отведение в сторону стоя",1,"12 / нога","—",{nokg:true,vid:"06GI5LG0c4U",cues:["ok:Держись за стойку, корпус прямо","ok:Носок смотрит вперёд","no:Не наклоняйся в другую сторону ради высоты"]}),
+  e2("Махи гантелями в стороны",1,"15","—",{nokg:true,vid:"CKn5Bt0he4g",cues:["ok:Самые лёгкие гантели","ok:Руки до уровня плеч, локти чуть согнуты","no:Без рывков"]})
+];
+const WARM_SAT=[WARM[0],
+  e2("Суставная разминка стоя",1,"1 мин","—",{nokg:true,cues:["ok:Круги плечами, тазом, коленями — по 5–8 в каждую сторону","ok:Плавно, без рывков"]}),
+  WARM[2],WARM[3]];
+
+const DAYS=[
+ {tag:"Вторник",name:"Ягодицы и спина",dow:2,accent:"d1",warmup:WARM,main:[
+  e2("Отведение назад в кроссовере",0,REPS+" / нога",REST,{vid:"z8KVoDR6cqY",note:"В видео резинка — в кроссовере движение то же",cues:["ok:Манжета на щиколотке, держись за стойку","ok:Корпус чуть наклонён вперёд, спина ровная","ok:Отводи ногу назад и сжимай ягодицу",BREATH,"no:Не прогибай поясницу ради амплитуды"]}),
+  e2("Отведение в сторону в кроссовере",0,REPS+" / нога",REST,{vid:"06GI5LG0c4U",cues:["ok:Встань боком к блоку, манжета на дальней ноге","ok:Корпус прямо, носок смотрит вперёд",BREATH,"no:Не наклоняйся в сторону"]}),
+  e2("Сгибание ног сидя",0,REPS,REST,{vid:"IY_s_ZS4ZIY",start:4,cues:["ok:Колено на оси тренажёра, валик над пятками","ok:Спина прижата к спинке","ok:Сгибай с выдохом, возвращай медленно","no:Без рывков"]}),
+  e2("Тяга верхнего блока",0,REPS,REST,{vid:"uoxErtG1lGE",cues:["ok:Хват чуть шире плеч","ok:Тяни к верху груди, локти вниз",BREATH,"no:Не отклоняйся сильно назад","no:Не тяни за голову"]}),
+  e2("Горизонтальная тяга в блоке",0,REPS,REST,{vid:"oiIKqh75D6E",cues:["ok:Спина прямая, колени чуть согнуты","ok:Тяни к поясу, сводя лопатки",BREATH,"no:Не раскачивайся корпусом"]})]},
+ {tag:"Четверг",name:"Ноги, грудь, осанка",dow:4,accent:"d2",warmup:WARM,main:[
+  e2("Разгибание ног сидя",0,REPS,REST,{vid:"6Qzn7mZoU8Y",cues:["ok:Колено на оси тренажёра, валик над стопой","ok:Разгибай с выдохом, вниз медленно","no:Не отрывай таз от сиденья"]}),
+  e2("Разведение ног в тренажёре",0,REPS,REST,{vid:"zeLhOFVWywk",start:4,cues:["ok:Спина прижата к спинке","ok:Разводи с выдохом, возвращай медленно","no:Не бросай вес"]}),
+  e2("Шаг на платформу",0,REPS+" / нога",REST,{vid:"DbJZs9mEylU",start:0,nokg:true,cues:["ok:Платформа низкая — ниже колена","ok:Ставь всю стопу, вставай толчком пятки","ok:Можно держаться за опору","no:Не отталкивайся нижней ногой"]}),
+  e2("Жим от груди в тренажёре",0,REPS,REST,{vid:"SZGPrHIEwFQ",note:"В видео тренажёр Хаммер — в другом тренажёре техника та же",cues:["ok:Рукояти на уровне середины груди","ok:Лопатки прижаты к спинке",BREATH,"no:Не задерживай дыхание на жиме"]}),
+  e2("Обратные разведения в тренажёре",0,REPS,REST,{vid:"t74AfiHLiNs",cues:["ok:Сядь лицом к спинке, грудь прижата","ok:Руки почти прямые, в конце сведи лопатки",BREATH,"no:Не поднимай плечи к ушам"]})]},
+ {tag:"Суббота",name:"Ягодицы и всё тело",dow:6,accent:"d3",warmup:WARM_SAT,main:[
+  e2("Ягодичный мостик на полу",0,REPS,REST,{nokg:true,vid:"_rk0sjIGUlw",cues:["ok:Стопы на ширине таза, пятки ближе к ягодицам","ok:Наверху пауза 1 сек, сожми ягодицы",BREATH,"no:Без веса на животе","no:Вставай с пола через бок"]}),
+  e2("Отведение назад в тренажёре",0,REPS+" / нога",REST,{vid:"z8KVoDR6cqY",note:"Только тренажёр стоя. Если в зале вариант на четвереньках — делай в кроссовере",cues:["ok:Держись за рукояти, корпус неподвижен","ok:Толкай ногой назад, сжимай ягодицу",BREATH,"no:Не прогибай поясницу"]}),
+  e2("Разведение ног в тренажёре",0,REPS,REST,{vid:"zeLhOFVWywk",start:4,cues:["ok:Спина прижата к спинке","ok:Разводи с выдохом, возвращай медленно","no:Не бросай вес"]}),
+  e2("Тяга одной рукой сидя",0,REPS+" / рука",REST,{vid:"E8gJigV9UmE",cues:["ok:Сидя, спина прямая","ok:Тяни к поясу, локоть вдоль корпуса",BREATH,"no:Не разворачивай корпус"]}),
+  e2("Махи гантелями сидя",0,REPS,REST,{vid:"CKn5Bt0he4g",cues:["ok:Сидя на скамье со спинкой","ok:Лёгкие гантели, руки до уровня плеч",BREATH,"no:Без рывков и раскачки"]})]}
+];
+const COOL="Дорожка: спокойная ходьба 10 мин, наклон по самочувствию, без бега. Потом растяжка по видео, ~5 мин.";
+const COOL_NOTE="В широком приседе (около 0:50–1:15) тянись без поворота плеч. Видео остановится на 5:00 — упражнения на полу в конце пропускаем до врача.";
+const SAFE=`<b>Пока не было врача:</b><br>· Выдох на усилии, дыхание не задерживать, не натуживаться.<br>· Вес такой, чтобы можно было говорить. Покраснело лицо — вес большой.<br>· С пола вставать через бок.<br>· Нельзя: штанга (присед, становая), жим ногами, пресс, планка, лёжа на животе, наклоны.<br><span class="stop"><b>Сразу стоп и к врачу:</b> резкая боль в пупке, выпячивание стало больше или твёрдым, не вправляется, тошнота.</span>`;
+
+/* ===== неделя / подходы ===== */
+function weekNo(){const s=new Date(PLAN_START+"T00:00:00"),n=new Date();const w=Math.floor((n-s)/(7*864e5))+1;return Math.max(1,w);}
+function setsNow(){return 3;}
+function stageTxt(){const w=weekNo();return w<=4?"Этап 1 · неделя "+w:(w<=12?"Этап 2 · неделя "+w:"Этап 3 · неделя "+w);}
+
+/* ===== хранилище (своё, не Сергея) ===== */
+const SK="wlog_wife_v1";
+function store(){try{return JSON.parse(localStorage.getItem(SK))||{last:{},sessions:[]}}catch(e){return{last:{},sessions:[]}}}
+function saveStore(s){try{localStorage.setItem(SK,JSON.stringify(s))}catch(e){}}
+function wId(w){return w.tag+"|"+w.name}
+function exKey(w,e){return wId(w)+"::"+e.name}
+function dayKey(ts){const d=new Date(ts);return d.getFullYear()+"-"+d.getMonth()+"-"+d.getDate();}
+const DUMBBELL_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6"/><path d="M7 7.5v9"/><path d="M17 7.5v9"/><path d="M20 9v6"/><path d="M7 12h10"/></svg>';
+
+/* ===== главная ===== */
+function habitCard(){
+  const sess=store().sessions||[], setDays=new Set(sess.map(x=>dayKey(x.ts)));
+  const now=new Date(), todayK=dayKey(now.getTime());
+  const dow=(now.getDay()+6)%7, monday=new Date(now); monday.setDate(now.getDate()-dow); monday.setHours(0,0,0,0);
+  const L=["Пн","Вт","Ср","Чт","Пт","Сб","Вс"], planIdx=[1,3,5];
+  let dots="";
+  for(let i=0;i<7;i++){const dd=new Date(monday); dd.setDate(monday.getDate()+i); const k=dayKey(dd.getTime()); const done=setDays.has(k);
+    dots+=`<div class="dcell ${done?'on':''} ${k===todayK?'today':''} ${planIdx.includes(i)?'plan':''}"><div class="dcirc">${done?`<span class="dic">${DUMBBELL_SVG}</span>`:""}</div><span class="dlbl">${L[i]}</span></div>`;}
+  const ym=now.getFullYear()+"-"+now.getMonth();
+  const monthCount=new Set(sess.filter(x=>{const d=new Date(x.ts);return d.getFullYear()+"-"+d.getMonth()===ym;}).map(x=>dayKey(x.ts))).size;
+  const dim=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
+  const futureDays=(dim-now.getDate())+(setDays.has(todayK)?0:1);
+  const goal=Math.max(1,monthCount+Math.round(3*futureDays/7));
+  const pct=Math.min(100,Math.round(monthCount/goal*100));
+  return `<div class="habit"><div class="hdots">${dots}</div>
+    <div class="mgoal"><div class="mgoal-l"><span>В этом месяце</span><span><b>${monthCount}</b> из ${goal}</span></div><div class="mbar"><div class="mfill" style="width:${pct}%"></div></div></div></div>`;
+}
+function renderHome(){
+  document.getElementById("habit").innerHTML=habitCard();
+  document.getElementById("cap").textContent=stageTxt()+" · вт · чт · сб · "+setsNow()+" подхода × "+REPS;
+  const td=new Date().getDay();
+  document.getElementById("days").innerHTML=DAYS.map((w,i)=>`<button class="daycard ${w.accent} ${w.dow===td?'today':''}" onclick="openW(${i})">
+      <span class="info"><span class="tag">${w.tag}${w.dow===td?" · сегодня":""}</span><span class="t">${w.name}</span></span>
+      <span class="n">${w.main.length}</span></button>`).join("");
+  document.getElementById("safebox").innerHTML=SAFE;
+}
+function toggleSafe(){document.getElementById("safebox").classList.toggle("hidden");}
+
+/* ===== тренировка ===== */
+let CUR=null,START=null,timerInt=null,lastAct=null,FINISHED=false,idleInt=null;
+const IDLE_MS=15*60*1000;
+function openW(i,restoring){
+  if(!restoring)clearDraft();
+  const w=DAYS[i]; CUR=w; START=null; lastAct=null; FINISHED=false;
+  clearInterval(timerInt); clearInterval(idleInt); idleInt=setInterval(idleCheck,20000);
+  const s=store(), n=setsNow();
+  const sb=document.getElementById("startbtn"); sb.className="startbtn"; sb.textContent="▶ Начать";
+  document.getElementById("wnote").value="";
+  document.getElementById("whead").className="whead "+w.accent;
+  document.getElementById("whead").innerHTML=`<div class="tag">${w.tag} · ${stageTxt()}</div><div class="t">${w.name}</div><div class="s">${n} подхода × ${REPS} · отдых 60–90 сек · выдох на усилии</div>`;
+  document.getElementById("warmwrap").innerHTML=
+    `<button class="togglebar" onclick="toggleBlock('warmbody','warmchev')"><span>Разминка<span class="sub"> · ~10 мин</span></span><span class="chev" id="warmchev">▾</span></button>
+     <div id="warmbody" class="hidden">${w.warmup.map(x=>exBlock(w,x,s,true,true,1)).join("")}</div>`;
+  document.getElementById("exlist").innerHTML=`<div class="sechead"><span>Основное</span><span class="ln"></span></div>`+
+    w.main.map(x=>exBlock(w,x,s,!!x.nokg,false,n)).join("");
+  document.getElementById("coolwrap").innerHTML=`<div class="sechead"><span>Заминка</span><span class="ln"></span></div><div class="cool"><div class="h">10–15 мин</div><div class="p">${COOL}</div><div class="p" style="color:var(--bur-tx)">${COOL_NOTE}</div><button class="techbtn" style="margin-top:10px" onclick="openVideo('ViLSAav8kKc',17,300)">▶ Растяжка — видео</button></div>`;
+  document.getElementById("home").classList.add("hidden");
+  document.getElementById("workout").classList.remove("hidden");
+  window.scrollTo(0,0);
+}
+function toggleBlock(id,chev){document.getElementById(id).classList.toggle("hidden");document.getElementById(chev).classList.toggle("open");}
+function cuesHTML(e){
+  const lines=(e.cues||[]).map(c=>{const ok=c.startsWith("ok:");return `<div class="c ${ok?'ok':'no'}">${c.slice(3)}</div>`;}).join("");
+  const v=e.vid?`<button class="vbtn" onclick="openVideo('${e.vid}'${e.start?","+e.start:""})">▶ Смотреть видео</button>`:`<div class="vsoon">Видео подбирается</div>`;
+  return `<div class="cues hidden">${lines}${v}</div>`;
+}
+function exBlock(w,e,s,nokg,isWarm,sets){
+  const key=exKey(w,e),prev=(s.last||{})[key]||null;
+  const note=e.note?`<div class="note">${e.note}</div>`:"";
+  let rows="";
+  for(let i=0;i<sets;i++){
+    const p=prev&&prev[i]?prev[i]:null;
+    const pTxt=p?(nokg?`× <b>${p.reps||"—"}</b>`:`<b>${p.kg||"—"}</b> × ${p.reps||"—"}`):"—";
+    const kgCell=nokg?"":`<td><input class="sinp kg" inputmode="decimal" ${p&&p.kg?`value="${p.kg}"`:""} placeholder="кг"></td>`;
+    rows+=`<tr data-pk="${p&&p.kg?p.kg:""}"><td class="setno">${i+1}</td><td class="prevc">${pTxt}</td>${kgCell}
+      <td><input class="sinp rp" inputmode="numeric" placeholder="${p&&p.reps?p.reps:String(e.reps).split(" ")[0]}"></td>
+      <td><button class="done" onclick="toggleSet(this,'${e.rest}')">✓</button></td></tr>`;
+  }
+  const cbtn=`<button class="cbtn" onclick="toggleNote(this)" aria-label="Заметка"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.5 8.6 8.6 0 0 1-3.9-.9L3 21l1.9-5.6A8.4 8.4 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.4 8.4 0 0 1 21 11.5z"/></svg><span class="cdot"></span></button>`;
+  const plan=isWarm?e.reps:`План ${sets}×${e.reps}`;
+  return `<div class="ex ${isWarm?'warm':''}" data-key="${key}" data-nokg="${nokg?1:0}">
+    <div class="name">${e.name}</div><div class="exhd"><div><div class="plan">${plan}</div>${note}</div><div class="exact">${cbtn}<button class="techbtn" onclick="toggleCues(this)">Техника ▾</button></div></div>
+    ${cuesHTML(e)}
+    <div class="exnote hidden"><textarea class="exnote-ta" rows="2" placeholder="Пометка к упражнению…"></textarea><button class="exnote-ok" onclick="saveNote(this)">ОК</button></div>
+    <table class="sets"><thead><tr><th>№</th><th class="l">Прошлый</th>${nokg?"":"<th>Кг</th>"}<th>Повт.</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+function toggleNote(btn){const n=btn.closest(".ex").querySelector(".exnote");if(!n.classList.toggle("hidden")){const ta=n.querySelector(".exnote-ta");if(ta)ta.focus();}}
+function saveNote(btn){const ex=btn.closest(".ex"),ta=ex.querySelector(".exnote-ta");ex.classList.toggle("hasnote",!!(ta&&ta.value.trim()));if(ta)ta.blur();ex.querySelector(".exnote").classList.add("hidden");markActivity();}
+function toggleCues(btn){btn.closest(".ex").querySelector(".cues").classList.toggle("hidden");}
+function toggleSet(btn,rest){markActivity();const tr=btn.closest("tr");tr.classList.toggle("setdone");if(tr.classList.contains("setdone"))startRest(rest);}
+document.addEventListener("input",e=>{if(e.target.classList.contains("sinp"))markActivity();else if(e.target.id==="wnote"||e.target.classList.contains("exnote-ta"))saveDraft();});
+
+function toggleStart(){if(!START)markActivity();}
+function tick(){const b=document.getElementById("startbtn");const s=Math.floor((Date.now()-START)/1000);b.textContent="⏱ "+Math.floor(s/60)+":"+String(s%60).padStart(2,"0");}
+function markActivity(){lastAct=Date.now();setTimeout(saveDraft,0);
+  if(!START){START=lastAct;const b=document.getElementById("startbtn");b.classList.add("run");tick();clearInterval(timerInt);timerInt=setInterval(tick,1000);}}
+function idleCheck(){if(START&&!FINISHED&&lastAct&&(Date.now()-lastAct>IDLE_MS))finishWorkout(true);}
+
+/* таймер отдыха — по времени окончания, не сбивается при блокировке экрана */
+let restT=null,restEnd=0;
+function parseRest(r){const s=String(r||"");const m=s.match(/([\d.]+)\s*мин/);if(m)return Math.round(parseFloat(m[1])*60);const c=s.match(/([\d.]+)\s*сек/);return c?Math.round(parseFloat(c[1])):0;}
+function restRemain(){return Math.max(0,Math.round((restEnd-Date.now())/1000));}
+function startRest(r){const s=parseRest(r);if(!s)return;restEnd=Date.now()+s*1000;showRest();clearInterval(restT);
+  restT=setInterval(function(){if(restRemain()<=0){restDone();}else showRest();},250);}
+function showRest(){document.getElementById("restbar").classList.add("show");const t=restRemain();document.getElementById("rest-tm").textContent=Math.floor(t/60)+":"+String(t%60).padStart(2,"0");}
+function restAdd(n){if(restEnd<Date.now())restEnd=Date.now();restEnd+=n*1000;showRest();}
+function restDone(){restSkip();try{navigator.vibrate&&navigator.vibrate(300);}catch(e){}}
+function restSkip(){clearInterval(restT);document.getElementById("restbar").classList.remove("show");}
+document.addEventListener("visibilitychange",function(){if(document.hidden)return;
+  if(document.getElementById("restbar").classList.contains("show")){if(restRemain()<=0)restSkip();else showRest();}
+  if(START&&!FINISHED)tick();});
+
+const SHORTS=new Set(["uoxErtG1lGE","oiIKqh75D6E","6Qzn7mZoU8Y","SZGPrHIEwFQ","t74AfiHLiNs","CKn5Bt0he4g","E8gJigV9UmE","DbJZs9mEylU"]);
+function openVideo(id,start,end){document.getElementById("vwrap").classList.toggle("wide",!SHORTS.has(id));document.getElementById("videoFrame").src="https://www.youtube.com/embed/"+id+"?autoplay=1&rel=0&playsinline=1"+(start?"&start="+start:"")+(end?"&end="+end:"");
+  document.getElementById("videoModal").classList.add("show");}
+function closeVideo(){document.getElementById("videoFrame").src="";document.getElementById("videoModal").classList.remove("show");}
+const MUSIC_URL="https://youtu.be/eN0dz0EV8bE";
+function openMusic(){window.open(MUSIC_URL,"_blank","noopener");}
+function toast(t){const el=document.getElementById("toast");el.textContent=t;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2600);}
+
+/* ===== синхронизация с Google-таблицей Кати (своя таблица и свой скрипт) =====
+   Отправка: строки уходят в очередь (localStorage) и удаляются из неё только после успешной отправки.
+   Если в зале нет связи — отправятся при следующем открытии приложения. */
+const SYNC_URL="", SYNC_TOKEN="";
+function flushQueue(){if(!SYNC_URL)return;const s=store();const q=s.queue||[];if(!q.length)return;
+  const batch=q.slice();
+  fetch(SYNC_URL,{method:"POST",mode:"no-cors",keepalive:true,headers:{"Content-Type":"text/plain;charset=utf-8"},
+    body:JSON.stringify({token:SYNC_TOKEN,prog:"zal",rows:[].concat(...batch.map(b=>b.rows))})})
+  .then(()=>{const t=store();const ids=new Set(batch.map(b=>b.id));t.queue=(t.queue||[]).filter(b=>!ids.has(b.id));saveStore(t);})
+  .catch(()=>{});}
+function syncToSheet(rows){if(!rows||!rows.length)return;const s=store();s.queue=s.queue||[];s.queue.push({id:Date.now()+"-"+Math.random().toString(36).slice(2,7),rows});saveStore(s);flushQueue();}
+
+/* ===== восстановление истории из таблицы: дни тренировок и «Прошлый» (вес и повторы) ===== */
+function parseD(v){if(!v)return null;const m=String(v).match(/(\d{1,2})[.\/](\d{1,2})[.\/](\d{4})/);return m?new Date(+m[3],+m[2]-1,+m[1],12,0,0):null;}
+function importSheet(d){try{
+  const rowsIn=(d&&d["Зал"])||[]; if(rowsIn.length<2)return;
+  const s=store(), tk=dayKey(Date.now()), built=[], seen=new Set(), lastMap={};
+  rowsIn.slice(1).forEach(r=>{const dt=parseD(r[0]);if(!dt)return;
+    const day=DAYS.find(w=>w.name===String(r[2]).trim()); const k=dayKey(dt.getTime());
+    if(!seen.has(k)){seen.add(k);built.push({ts:dt.getTime(),date:dt.toLocaleDateString("ru-RU"),title:String(r[2]||""),wid:day?wId(day):""});}
+    if(!day)return; const key=wId(day)+"::"+String(r[3]).trim(), i=(parseInt(r[4])||1)-1, ts=dt.getTime();
+    if(!lastMap[key]||ts>lastMap[key].ts)lastMap[key]={ts,sets:[]};
+    if(ts===lastMap[key].ts)lastMap[key].sets[i]={kg:String(r[5]||"").trim(),reps:String(r[6]||"").trim()};});
+  s.last=s.last||{};
+  Object.keys(lastMap).forEach(k=>{const sets=lastMap[k].sets.filter(x=>x&&(x.kg||x.reps));if(sets.length)s.last[k]=sets;});
+  (s.sessions||[]).forEach(x=>{const k=dayKey(x.ts);if(!seen.has(k)){seen.add(k);built.push(x);}});
+  s.sessions=built.sort((a,b)=>a.ts-b.ts); saveStore(s);
+  if(!document.getElementById("home").classList.contains("hidden"))renderHome();
+}catch(e){}}
+function loadHistory(){if(!SYNC_URL)return;try{window.__wlogcb=function(d){importSheet(d);};const sc=document.createElement("script");
+  sc.src=SYNC_URL+"?callback=__wlogcb&token="+encodeURIComponent(SYNC_TOKEN)+"&t="+Date.now();sc.onerror=function(){};document.body.appendChild(sc);}catch(e){}}
+
+/* ===== черновик: если телефон выгрузил страницу посреди тренировки, введённое не пропадёт ===== */
+function saveDraft(){if(!CUR||FINISHED)return;const vals={};
+  document.querySelectorAll("#warmbody .ex, #exlist .ex").forEach(ex=>{const rows=[];
+    ex.querySelectorAll("tbody tr").forEach(tr=>{const kg=tr.querySelector(".kg");rows.push({kg:kg?kg.value:"",reps:tr.querySelector(".rp").value,done:tr.classList.contains("setdone")});});
+    const ta=ex.querySelector(".exnote-ta");vals[ex.dataset.key]={rows,note:ta?ta.value:""};});
+  const s=store();s.draft={day:DAYS.indexOf(CUR),dk:dayKey(Date.now()),start:START,lastAct,vals,wnote:document.getElementById("wnote").value};saveStore(s);}
+function clearDraft(){const s=store();delete s.draft;saveStore(s);}
+function restoreDraft(){const s=store(),d=s.draft;if(!d)return false;
+  if(d.dk!==dayKey(Date.now())||!DAYS[d.day]){clearDraft();return false;}
+  openW(d.day,true);
+  document.querySelectorAll("#warmbody .ex, #exlist .ex").forEach(ex=>{const v=d.vals[ex.dataset.key];if(!v)return;
+    ex.querySelectorAll("tbody tr").forEach((tr,i)=>{const r=v.rows[i];if(!r)return;const kg=tr.querySelector(".kg");if(kg)kg.value=r.kg;tr.querySelector(".rp").value=r.reps;tr.classList.toggle("setdone",!!r.done);});
+    const ta=ex.querySelector(".exnote-ta");if(ta&&v.note){ta.value=v.note;ex.classList.add("hasnote");}});
+  document.getElementById("wnote").value=d.wnote||"";
+  if(d.start){START=d.start;lastAct=d.lastAct||Date.now();const b=document.getElementById("startbtn");b.classList.add("run");tick();clearInterval(timerInt);timerInt=setInterval(tick,1000);}
+  return true;}
+
+function collectSets(){const collected={};
+  document.querySelectorAll("#warmbody .ex, #exlist .ex").forEach(exEl=>{const sets=[];
+    exEl.querySelectorAll("tbody tr").forEach(tr=>{const kgi=tr.querySelector(".kg");const kg=kgi?kgi.value.trim():"";const reps=tr.querySelector(".rp").value.trim();
+      if(reps||tr.classList.contains("setdone"))sets.push({kg,reps});});
+    if(sets.length)collected[exEl.dataset.key]=sets;});
+  return collected;}
+function finishWorkout(auto){
+  if(FINISHED)return;
+  const collected=collectSets();
+  if(!Object.keys(collected).length){if(auto){FINISHED=true;clearDraft();clearInterval(idleInt);clearInterval(timerInt);return;} toast("Пока ничего не введено"); return;}
+  const s=store(); s.last=s.last||{}; Object.assign(s.last,collected);
+  const end=auto?(lastAct||Date.now()):Date.now(), t=x=>new Date(x).toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"});
+  const rec={ts:end,wid:wId(CUR),date:new Date(end).toLocaleDateString("ru-RU"),title:CUR.name,tag:CUR.tag};
+  if(START){rec.start=t(START);rec.end=t(end);rec.durMin=Math.round((end-START)/60000);}
+  rec.note=document.getElementById("wnote").value.trim();
+  s.sessions=s.sessions||[]; s.sessions.push(rec); saveStore(s);
+  const exnotes={}; document.querySelectorAll("#warmbody .ex, #exlist .ex").forEach(ex=>{const ta=ex.querySelector(".exnote-ta");exnotes[ex.dataset.key]=ta?ta.value.trim():"";});
+  const rows=[];
+  Object.keys(collected).forEach(key=>{const exName=key.split("::")[1];
+    collected[key].forEach((st,idx)=>{const ton=(parseFloat(st.kg)||0)*(parseInt(st.reps)||0);
+      rows.push([rec.date,rec.start||t(end),CUR.name,exName,idx+1,st.kg||"",st.reps||"",ton||"",rec.durMin||"",exnotes[key]||rec.note,rec.end||t(end)]);});});
+  syncToSheet(rows);
+  FINISHED=true;clearDraft();restSkip();clearInterval(timerInt);clearInterval(idleInt);
+  if(!auto)toast("Готово"+(rec.durMin?` · ${rec.durMin} мин`:"")+". В следующий раз покажу «прошлый»");
+  showHome();
+}
+function leaveWorkout(){if(START&&!FINISHED&&Object.keys(collectSets()).length){finishWorkout(true);}else{FINISHED=true;clearDraft();clearInterval(idleInt);clearInterval(timerInt);showHome();}}
+function showHome(){restSkip();document.getElementById("workout").classList.add("hidden");document.getElementById("home").classList.remove("hidden");
+  clearInterval(timerInt);clearInterval(idleInt);renderHome();window.scrollTo(0,0);}
+
+(function(){const d=new Date();
+  const M=["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+  document.getElementById("datebadge").textContent=d.getDate()+" "+M[d.getMonth()];
+  renderHome();restoreDraft();flushQueue();loadHistory();})();
+</script>
+</body>
+</html>
